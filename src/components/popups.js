@@ -1,6 +1,3 @@
-import { nameInput, jobInput, cardNameInput, urlInput } from "."
-import { addGenericCard } from "."
-
 const escapeHandler = (e) => {
     if (e.key === 'Escape') {
         const isOpened = document.querySelector('.popup_is-opened')
@@ -12,13 +9,7 @@ const escapeHandler = (e) => {
 
 export function openPopup(popupDomElement) {
 
-    popupDomElement.classList.add('popup_is-opened', 'popup_is-animated')
-
-    const newName = document.querySelector('.profile__title')
-    const newJob = document.querySelector('.profile__description')
-
-    nameInput.value = `${newName.textContent}`
-    jobInput.value = `${newJob.textContent}`
+    popupDomElement.classList.add('popup_is-opened')
 
     document.addEventListener('keydown', escapeHandler)
 }
@@ -26,38 +17,30 @@ export function openPopup(popupDomElement) {
 export function closePopup(popupDomElement) {
     popupDomElement.classList.remove('popup_is-opened')
 
-    nameInput.value = ''
-    jobInput.value = ''
-    cardNameInput.value = ''
-    urlInput.value = ''
-
     document.removeEventListener('keydown', escapeHandler)
 }
 
 
-export function handleFormSubmit(evt) {
+export function editProfileSubmit(evt, newName, newJob, nameInput, jobInput, popupEditProfile) {
     evt.preventDefault()
 
     const nameInputValue = nameInput.value
     const jobInputValue = jobInput.value
 
-    const newName = document.querySelector('.profile__title')
-    const newJob = document.querySelector('.profile__description')
-
     newName.textContent = nameInputValue
     newJob.textContent = jobInputValue
 
-    closePopup(evt.target.parentNode.parentNode)
+    closePopup(popupEditProfile)
 }
 
-export function addNewCard(evt) {
+export function addNewCard(evt, cardNameInput, urlInput, popupNewCard, addSpecificCard) {
     evt.preventDefault()
 
     const cardNameInputValue = cardNameInput.value
     const urlInputValue = urlInput.value
 
-    addGenericCard(cardNameInputValue, urlInputValue, true)
+    addSpecificCard(cardNameInputValue, urlInputValue, true)
 
-    closePopup(evt.target.parentNode.parentNode)
+    closePopup(popupNewCard)
 }
 

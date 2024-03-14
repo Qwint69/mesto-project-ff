@@ -1,5 +1,6 @@
-import { initialCards, addCard, likeCard } from "./cards"
-import { openPopup, closePopup, handleFormSubmit, addNewCard } from "./popups"
+import { addCard } from "./card"
+import { openPopup, closePopup, addNewCard, editProfileSubmit } from "./popups"
+import { initialCards } from './cards'
 
 const content = document.querySelector('.content')
 const placesList = content.querySelector('.places__list')
@@ -17,28 +18,38 @@ const popupCaption = document.querySelector('.popup__caption')
 // Элементы форм и форма
 const editForm = document.querySelector('form[name="edit-profile"]')
 const cardForm = document.querySelector('form[name="new-place"]')
-export const nameInput = document.querySelector('.popup__input_type_name')
-export const jobInput = document.querySelector('.popup__input_type_description')
-export const cardNameInput = document.querySelector('.popup__input_type_card-name')
-export const urlInput = document.querySelector('.popup__input_type_url')
+const nameInput = document.querySelector('.popup__input_type_name')
+const jobInput = document.querySelector('.popup__input_type_description')
+const cardNameInput = document.querySelector('.popup__input_type_card-name')
+const urlInput = document.querySelector('.popup__input_type_url')
+const newName = document.querySelector('.profile__title')
+const newJob = document.querySelector('.profile__description')
 
+const openCard = (name, link) => {
 
-export function addGenericCard(name, link, toBegining) {
-    return addCard(name, link, cardTemplate, placesList, (cardImage, name, link) => {
-        cardImage.addEventListener('click', () => {
-            popupImage.src = link
-            popupImage.alt = name
-            popupCaption.textContent = name
-            openPopup(popupImageModal)
-        })
-    }, toBegining)
+    popupImage.src = link
+    popupImage.alt = name
+    popupCaption.textContent = name
+    openPopup(popupImageModal)
 }
 
 
-initialCards.forEach((card) => addGenericCard(card.name, card.link))
+export function addSpecificCard(name, link, toBegining) {
+    return addCard(name, link, cardTemplate, placesList, openCard, toBegining)
+}
 
 
-editButton.addEventListener('click', () => openPopup(popupEditProfile))
+initialCards.forEach((card) => addSpecificCard(card.name, card.link))
+
+
+editButton.addEventListener('click', () => {
+
+    nameInput.value = `${newName.textContent}`
+    jobInput.value = `${newJob.textContent}`
+
+    openPopup(popupEditProfile)
+})
+
 addButton.addEventListener('click', () => openPopup(popupNewCard))
 
 
@@ -52,8 +63,7 @@ document.addEventListener('click', (e) => {
 })
 
 
-editForm.addEventListener('submit', handleFormSubmit)
+editForm.addEventListener('submit', (evt) => editProfileSubmit(evt, newName, newJob, nameInput, jobInput, popupEditProfile))
 
-
-cardForm.addEventListener('submit', addNewCard)
+cardForm.addEventListener('submit', (evt) => addNewCard(evt, cardNameInput, urlInput, popupNewCard, addSpecificCard))
 
