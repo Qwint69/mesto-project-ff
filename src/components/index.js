@@ -1,5 +1,5 @@
-import { addCard } from "./card"
-import { openPopup, closePopup, addNewCard, editProfileSubmit } from "./popups"
+import { createCard, deleteCard, likeCard } from "./card"
+import { openPopup, closePopup } from "./popups"
 import { initialCards } from './cards'
 
 const content = document.querySelector('.content')
@@ -33,13 +33,16 @@ const openCard = (name, link) => {
     openPopup(popupImageModal)
 }
 
+function addCard(name, link, toBegining) {
+    const cardElement = createCard(name, link, deleteCard, likeCard, cardTemplate, openCard)
 
-export function addSpecificCard(name, link, toBegining) {
-    return addCard(name, link, cardTemplate, placesList, openCard, toBegining)
+    if (toBegining) { placesList.prepend(cardElement) }
+    else { placesList.append(cardElement) }
+
 }
 
 
-initialCards.forEach((card) => addSpecificCard(card.name, card.link))
+initialCards.forEach((card) => addCard(card.name, card.link))
 
 
 editButton.addEventListener('click', () => {
@@ -63,7 +66,29 @@ document.addEventListener('click', (e) => {
 })
 
 
-editForm.addEventListener('submit', (evt) => editProfileSubmit(evt, newName, newJob, nameInput, jobInput, popupEditProfile))
+function editProfileSubmit(evt) {
+    evt.preventDefault()
 
-cardForm.addEventListener('submit', (evt) => addNewCard(evt, cardNameInput, urlInput, popupNewCard, addSpecificCard))
+    const nameInputValue = nameInput.value
+    const jobInputValue = jobInput.value
 
+    newName.textContent = nameInputValue
+    newJob.textContent = jobInputValue
+
+    closePopup(popupEditProfile)
+}
+
+function addNewCard(evt) {
+    evt.preventDefault()
+
+    const cardNameInputValue = cardNameInput.value
+    const urlInputValue = urlInput.value
+
+    addCard(cardNameInputValue, urlInputValue, true)
+
+    closePopup(popupNewCard)
+}
+
+editForm.addEventListener('submit', editProfileSubmit)
+
+cardForm.addEventListener('submit', addNewCard)

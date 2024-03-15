@@ -21,26 +21,5 @@ export function closePopup(popupDomElement) {
 }
 
 
-export function editProfileSubmit(evt, newName, newJob, nameInput, jobInput, popupEditProfile) {
-    evt.preventDefault()
 
-    const nameInputValue = nameInput.value
-    const jobInputValue = jobInput.value
-
-    newName.textContent = nameInputValue
-    newJob.textContent = jobInputValue
-
-    closePopup(popupEditProfile)
-}
-
-export function addNewCard(evt, cardNameInput, urlInput, popupNewCard, addSpecificCard) {
-    evt.preventDefault()
-
-    const cardNameInputValue = cardNameInput.value
-    const urlInputValue = urlInput.value
-
-    addSpecificCard(cardNameInputValue, urlInputValue, true)
-
-    closePopup(popupNewCard)
-}
 

@@ -1,13 +1,4 @@
 
-export function addCard(name, link, cardTemplate, placesList, onOpen, toBegining) {
-  const cardElement = createCard(name, link, deleteCard, likeCard, cardTemplate, onOpen)
-
-  if (toBegining) { placesList.prepend(cardElement) }
-  else { placesList.append(cardElement) }
-
-  return cardElement
-}
-
 
 export function createCard(name, link, deleteCard, likeCard, cardTemplate, onOpen) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true)
