@@ -2,6 +2,7 @@ import './pages/index.css'
 import './components/cards.js'
 import './components/index.js'
 import './components/popups.js'
+import './components/validation.js'
 
 
 import addIcon from './images/add-icon.svg';

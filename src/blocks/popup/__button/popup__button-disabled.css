@@ -1,0 +1,28 @@
+.popup__button-disabled {
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+    line-height: 22px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 2px;
+    border: 1px solid black;
+    transition: visibility 0s, background 0.3s;
+    margin-top: 48px;
+    opacity: 0.2;
+}
+
+.popup__button-disabled:hover {
+    cursor: not-allowed;
+    background: white;
+}
+
+@media screen and (max-width: 568px) {
+    .popup__button {
+        font-size: 14px;
+        line-height: 17px;
+    }
+}

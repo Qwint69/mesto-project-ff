@@ -1,6 +1,7 @@
 import { createCard, deleteCard, likeCard } from "./card"
 import { openPopup, closePopup } from "./popups"
 import { initialCards } from './cards'
+import { enableValidation, clearValidation } from './validation'
 
 const content = document.querySelector('.content')
 const placesList = content.querySelector('.places__list')
@@ -25,6 +26,26 @@ const urlInput = document.querySelector('.popup__input_type_url')
 const newName = document.querySelector('.profile__title')
 const newJob = document.querySelector('.profile__description')
 
+
+const validationConfig = {
+    formElement: '.popup__form',
+    inputElement: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button-disabled',
+    inputErrorClass: 'popup__input_type-error',
+    errorClass: 'popup__input-error-visible'
+}
+
+
+const withClear = (callback, formElement, withButtonDisable) => {
+
+    return (evt) => {
+        callback(evt)
+        clearValidation(formElement, validationConfig, withButtonDisable)
+    }
+}
+
+
 const openCard = (name, link) => {
 
     popupImage.src = link
@@ -45,15 +66,17 @@ function addCard(name, link, toBegining) {
 initialCards.forEach((card) => addCard(card.name, card.link))
 
 
-editButton.addEventListener('click', () => {
+editButton.addEventListener('click', withClear(() => {
 
     nameInput.value = `${newName.textContent}`
     jobInput.value = `${newJob.textContent}`
 
     openPopup(popupEditProfile)
-})
 
-addButton.addEventListener('click', () => openPopup(popupNewCard))
+}, editForm, false))
+
+
+addButton.addEventListener('click', withClear(() => openPopup(popupNewCard), cardForm, true))
 
 
 closeButtons.forEach((c) => c.addEventListener('click', (e) => closePopup(e.target.parentNode.parentNode)))
@@ -78,6 +101,7 @@ function editProfileSubmit(evt) {
     closePopup(popupEditProfile)
 }
 
+
 function addNewCard(evt) {
     evt.preventDefault()
 
@@ -86,9 +110,17 @@ function addNewCard(evt) {
 
     addCard(cardNameInputValue, urlInputValue, true)
 
+    cardNameInput.value = ''
+    urlInput.value = ''
+
     closePopup(popupNewCard)
 }
 
+
 editForm.addEventListener('submit', editProfileSubmit)
 
-cardForm.addEventListener('submit', addNewCard)
+cardForm.addEventListener('submit', withClear(addNewCard, cardForm, true))
+
+
+enableValidation(validationConfig)
+
