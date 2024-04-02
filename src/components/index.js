@@ -1,7 +1,7 @@
 import { createCard, deleteCard, likeCard } from "./card"
 import { openPopup, closePopup } from "./popups"
-import { initialCards } from './cards'
 import { enableValidation, clearValidation } from './validation'
+import { getUserInfo, getInitialCards, updateProfile, getNewCard } from "./api"
 
 const content = document.querySelector('.content')
 const placesList = content.querySelector('.places__list')
@@ -25,8 +25,9 @@ const cardNameInput = document.querySelector('.popup__input_type_card-name')
 const urlInput = document.querySelector('.popup__input_type_url')
 const newName = document.querySelector('.profile__title')
 const newJob = document.querySelector('.profile__description')
+const profileImage = document.querySelector('.profile__image')
 
-
+// Валидация
 const validationConfig = {
     formElement: '.popup__form',
     inputElement: '.popup__input',
@@ -45,7 +46,10 @@ const withClear = (callback, formElement, withButtonDisable) => {
     }
 }
 
+enableValidation(validationConfig)
+//
 
+//Добавление карточек
 const openCard = (name, link) => {
 
     popupImage.src = link
@@ -62,10 +66,12 @@ function addCard(name, link, toBegining) {
 
 }
 
+getInitialCards()
+    .then((cards) => {
+        cards.forEach((card) => addCard(card.name, card.link))
+    })
 
-initialCards.forEach((card) => addCard(card.name, card.link))
-
-
+//Модальные окна
 editButton.addEventListener('click', withClear(() => {
 
     nameInput.value = `${newName.textContent}`
@@ -73,7 +79,7 @@ editButton.addEventListener('click', withClear(() => {
 
     openPopup(popupEditProfile)
 
-}, editForm, false))
+}, editForm))
 
 
 addButton.addEventListener('click', withClear(() => openPopup(popupNewCard), cardForm, true))
@@ -95,8 +101,14 @@ function editProfileSubmit(evt) {
     const nameInputValue = nameInput.value
     const jobInputValue = jobInput.value
 
-    newName.textContent = nameInputValue
-    newJob.textContent = jobInputValue
+    updateProfile({
+        name: nameInput.value,
+        about: jobInput.value
+    })
+        .then(() => {
+            newName.textContent = nameInputValue
+            newJob.textContent = jobInputValue
+        })
 
     closePopup(popupEditProfile)
 }
@@ -108,7 +120,15 @@ function addNewCard(evt) {
     const cardNameInputValue = cardNameInput.value
     const urlInputValue = urlInput.value
 
-    addCard(cardNameInputValue, urlInputValue, true)
+    getNewCard({
+        name: cardNameInput.value,
+        link: urlInput.value
+    })
+    .then(() => {
+        addCard(cardNameInputValue, urlInputValue, true)
+    })
+
+    // addCard(cardNameInputValue, urlInputValue, true)
 
     cardNameInput.value = ''
     urlInput.value = ''
@@ -120,7 +140,15 @@ function addNewCard(evt) {
 editForm.addEventListener('submit', editProfileSubmit)
 
 cardForm.addEventListener('submit', withClear(addNewCard, cardForm, true))
+//
 
+//Данные профиля
+getUserInfo()
+    .then((profile) => {
+        newName.textContent = profile.name
+        newJob.textContent = profile.about
+        profileImage.src = profile.avatar
+    })
+//
 
-enableValidation(validationConfig)
 

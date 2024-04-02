@@ -10,37 +10,37 @@ const disableButton = (buttonElement, validationConfig) => {
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
 }
 
-const toggleButtonState = (inputList, buttonElement, elements) => {
+const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     if (hasInvalidInput(inputList)) {
         buttonElement.disabled = true;
-        buttonElement.classList.add(elements.inactiveButtonClass);
+        buttonElement.classList.add(validationConfig.inactiveButtonClass);
     } else {
         buttonElement.disabled = false;
-        buttonElement.classList.remove(elements.inactiveButtonClass);
+        buttonElement.classList.remove(validationConfig.inactiveButtonClass);
     }
 };
 
-const showInputError = (formElement, inputElement, errorMessage, elements) => {
+const showInputError = (formElement, inputElement, errorMessage, validationConfig) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
     if (errorElement) {
-        inputElement.classList.add(elements.inputErrorClass)
+        inputElement.classList.add(validationConfig.inputErrorClass)
         errorElement.textContent = errorMessage
-        errorElement.classList.add(elements.errorClass)
+        errorElement.classList.add(validationConfig.errorClass)
     }
 
 }
 
-const hideInputError = (formElement, inputElement, elements) => {
+const hideInputError = (formElement, inputElement, validationConfig) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
     if (errorElement) {
-        inputElement.classList.remove(elements.inputErrorClass)
-        errorElement.classList.remove(elements.errorClass)
+        inputElement.classList.remove(validationConfig.inputErrorClass)
+        errorElement.classList.remove(validationConfig.errorClass)
         errorElement.textContent = ''
     }
 
 }
 
-const checkInputValidity = (formElement, inputElement, elements) => {
+const checkInputValidity = (formElement, inputElement, validationConfig) => {
     const validity = inputElement.validity
     if (validity.patternMismatch || validity.typeMismatch) {
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -49,30 +49,30 @@ const checkInputValidity = (formElement, inputElement, elements) => {
     }
     console.log(inputElement.dataset, '4')
     if (!validity.valid) {
-        showInputError(formElement, inputElement, inputElement.validationMessage, elements);
+        showInputError(formElement, inputElement, inputElement.validationMessage, validationConfig);
     } else {
-        hideInputError(formElement, inputElement, elements);
+        hideInputError(formElement, inputElement, validationConfig);
     }
 }
 
-const setEventListeners = (formElement, elements) => {
-    const inputList = Array.from(formElement.querySelectorAll(elements.inputElement))
-    const submitButton = formElement.querySelector(elements.submitButtonSelector)
+const setEventListeners = (formElement, validationConfig) => {
+    const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputElement))
+    const submitButton = formElement.querySelector(validationConfig.submitButtonSelector)
     inputList.forEach((input) => {
         input.addEventListener('input', function () {
-            checkInputValidity(formElement, input, elements)
-            toggleButtonState(inputList, submitButton, elements)
+            checkInputValidity(formElement, input, validationConfig)
+            toggleButtonState(inputList, submitButton, validationConfig)
         })
     })
 }
 
-export const enableValidation = (elements) => {
-    const formList = Array.from(document.querySelectorAll(elements.formElement))
+export const enableValidation = (validationConfig) => {
+    const formList = Array.from(document.querySelectorAll(validationConfig.formElement))
     formList.forEach((form) => {
         form.addEventListener('submit', (evt) => {
             evt.preventDefault()
         })
-        setEventListeners(form, elements)
+        setEventListeners(form, validationConfig)
     })
 }
 
