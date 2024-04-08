@@ -1,0 +1,16 @@
+.profile__image-edit {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+  }
+  
+  .profile__image-edit:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.9) url('/src//images/Pencil.svg') no-repeat center;
+  }

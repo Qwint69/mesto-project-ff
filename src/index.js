@@ -18,5 +18,5 @@ import likeInactive from './images/like-inactive.svg';
 import logo from './images/logo.svg';
 
 
-document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`
+// document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`
 

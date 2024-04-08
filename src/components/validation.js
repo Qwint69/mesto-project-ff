@@ -47,7 +47,7 @@ const checkInputValidity = (formElement, inputElement, validationConfig) => {
     } else {
         inputElement.setCustomValidity("");
     }
-    console.log(inputElement.dataset, '4')
+    
     if (!validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage, validationConfig);
     } else {
