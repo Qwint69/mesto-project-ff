@@ -47,7 +47,7 @@ const checkInputValidity = (formElement, inputElement, validationConfig) => {
     } else {
         inputElement.setCustomValidity("");
     }
-    
+
     if (!validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage, validationConfig);
     } else {
@@ -82,7 +82,7 @@ export const clearValidation = (formElement, validationConfig, withButtonDisable
     inputList.forEach((input) => {
         hideInputError(formElement, input, validationConfig)
     })
-   if (withButtonDisable) {disableButton(buttonElement, validationConfig)}
+    if (withButtonDisable) { disableButton(buttonElement, validationConfig) }
 }
 
 

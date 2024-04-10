@@ -10,7 +10,7 @@ const escapeHandler = (e) => {
 export function openPopup(popupDomElement) {
 
     popupDomElement.classList.add('popup_is-opened')
-console.log(popupDomElement)
+
     document.addEventListener('keydown', escapeHandler)
 }
 
