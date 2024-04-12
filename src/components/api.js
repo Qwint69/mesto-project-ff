@@ -6,15 +6,23 @@ const config = {
     }
 }
 
+const handleResponse = res => {
+    if (res.ok) {
+      return res.json();
+    }
+
+    return Promise.reject(`Ошибка: ${res.status}`)
+}
+
 export const getUserInfo = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         headers: {
-            authorization: '9b905344-3d05-4d05-a4c9-656bee7e15b5'
+            authorization: config.headers.authorization
         }
     })
-        .then(res => res.json())
+        .then(handleResponse)
 
-        .catch(res => console.log(res))
+        
 }
 
 export const getInitialCards = () => {
@@ -23,9 +31,9 @@ export const getInitialCards = () => {
             authorization: '9b905344-3d05-4d05-a4c9-656bee7e15b5'
         }
     })
-        .then(res => res.json())
+        .then(handleResponse)
 
-        .catch(res => console.log(res))
+        
 }
 
 export const updateProfile = (newProfile) => {
@@ -38,9 +46,9 @@ export const updateProfile = (newProfile) => {
         })
     })
 
-        .then(res => res.json())
+        .then(handleResponse)
 
-        .catch(res => console.log(res))
+        
 }
 
 export const getNewCard = (newCard) => {
@@ -53,49 +61,40 @@ export const getNewCard = (newCard) => {
         })
     })
 
-        .then(res => res.json())
-
-        .catch(res => console.log(res))
+        .then(handleResponse)
 }
 
 export const deleteMineCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: {
-            authorization: '9b905344-3d05-4d05-a4c9-656bee7e15b5'
+            authorization: config.headers.authorization
         }
     })
-    .then(res => res.json())
-
-    .catch(res => console.log(res))
+    .then(handleResponse) 
 }
 
 export const addCardLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
         headers: {
-            authorization: '9b905344-3d05-4d05-a4c9-656bee7e15b5'
+            authorization: config.headers.authorization
         }
     })
-    .then(res => res.json())
-
-    .catch(res => console.log(res))
+    .then(handleResponse) 
 }
 
 export const removeCardLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
         headers: {
-            authorization: '9b905344-3d05-4d05-a4c9-656bee7e15b5'
+            authorization: config.headers.authorization
         }
     })
-    .then(res => res.json())
-
-    .catch(res => console.log(res))
+    .then(handleResponse) 
 }
 
 export const updateAvatar = (newAvatar) => {
-    console.log(newAvatar.avatar,'here is avatar')
     return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH' ,
         headers: config.headers,
@@ -104,7 +103,5 @@ export const updateAvatar = (newAvatar) => {
         })
     })
 
-    .then(res => res.json())
-
-    .catch(res => console.log(res))
+    .then(handleResponse)  
 }

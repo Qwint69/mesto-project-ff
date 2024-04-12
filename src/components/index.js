@@ -43,11 +43,11 @@ const validationConfig = {
     errorClass: 'popup__input-error-visible'
 }
 
-const withClear = (callback, formElement, withButtonDisable) => {
+const withClear = (callback, formElement) => {
 
     return (evt) => {
         callback(evt)
-        clearValidation(formElement, validationConfig, withButtonDisable)
+        clearValidation(formElement, validationConfig)
     }
 }
 
@@ -81,18 +81,17 @@ getUserInfo()
         userId = profile._id
         getInitialCards()
             .then((cards) => {
-                cards
-                    .map((card) => ({ ...card, isMine: card.owner._id == profile._id }))
-                    .forEach((card) => addCard(card))
+                cards.forEach((card) => addCard(card))
             })
+            .catch(err => console.log(err))
     })
 //
 
 //Модальные окна
 editButton.addEventListener('click', withClear(() => {
 
-    nameInput.value = `${newName.textContent}`
-    jobInput.value = `${newJob.textContent}`
+    nameInput.value = newName.textContent
+    jobInput.value = newJob.textContent
 
     openPopup(popupEditProfile)
 
@@ -101,7 +100,7 @@ editButton.addEventListener('click', withClear(() => {
 
 changeAvatar.addEventListener('click', withClear(() => {
 
-    urlInputAvatar.value = `${profileImage.src}`
+    urlInputAvatar.value = profileImage.src
 
     openPopup(popupNewAvatar)
 
@@ -120,29 +119,28 @@ document.addEventListener('click', (e) => {
 function editProfileSubmit(evt) {
     evt.preventDefault()
 
-    renderLoading(evt)
-
-    const nameInputValue = nameInput.value
-    const jobInputValue = jobInput.value
+    setLoadingState(evt, true)
 
     updateProfile({
         name: nameInput.value,
         about: jobInput.value
     })
-        .then(() => {
-            renderNotLoading(evt)
-
-            newName.textContent = nameInputValue
-            newJob.textContent = jobInputValue
+        .then((newProfile) => {
+            
+            newName.textContent = newProfile.name
+            newJob.textContent = newProfile.about
 
             closePopup(popupEditProfile)
         })
+        .catch(err => console.log(err))
+
+        .finally(() => setLoadingState(evt, false))
 }
 
 function addNewCard(evt) {
     evt.preventDefault()
 
-    renderLoading(evt)
+    setLoadingState(evt, true)
 
     getNewCard({
         name: cardNameInput.value,
@@ -150,57 +148,48 @@ function addNewCard(evt) {
     })
         .then((card) => {
 
-            renderNotLoading(evt)
+            addCard(card, true)
 
-            addCard({ ...card, isMine: true }, true)
-
-            cardNameInput.value = ''
-            urlInput.value = ''
+            cardForm.reset()
 
             closePopup(popupNewCard)
         })
+        .catch(err => console.log(err))
+
+        .finally(() => setLoadingState(evt, false))
 }
 
 function changeAvatarSubmit(evt) {
     evt.preventDefault()
 
-    renderLoading(evt)
+    setLoadingState(evt, true)
 
     updateAvatar({
         avatar: urlInputAvatar.value
     })
-        .then(() => {
-
-            renderNotLoading(evt)
-
-            profileImage.src = urlInputAvatar.value
-            urlInputAvatar.value = ''
+        .then((newProfile) => {
+            
+            profileImage.src = newProfile.avatar
 
             closePopup(popupNewAvatar)
         })
+        .catch(err => console.log(err))
+
+        .finally(() => setLoadingState(evt, false))
 }
 
 editForm.addEventListener('submit', editProfileSubmit)
 
-cardForm.addEventListener('submit', withClear(addNewCard, cardForm, true))
+cardForm.addEventListener('submit', withClear(addNewCard, cardForm))
 
 newAvatar.addEventListener('submit', changeAvatarSubmit)
 //
 
 // Загрузка
 
-function renderLoading(evt) {
-
-    const form = evt.target
-    const button = form.querySelector('.popup__button')
-    button.textContent = 'Сохранение...'
+function setLoadingState(evt, state) {
+    const form = evt.target 
+    const button = form.querySelector('.popup__button') 
+    button.textContent = state ?  'Сохранение...' : 'Сохранить'
 }
-
-function renderNotLoading(evt) {
-
-    const form = evt.target
-    const button = form.querySelector('.popup__button')
-    button.textContent = 'Сохранить'
-}
-
 
